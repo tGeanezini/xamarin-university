@@ -1,53 +1,41 @@
-﻿using System;
-using Android.App;
+﻿using Android.App;
 using Android.OS;
-using Android.Runtime;
-using Android.Support.Design.Widget;
-using Android.Support.V7.App;
-using Android.Views;
 using Android.Widget;
 
 namespace TipCalculator
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
-    public class MainActivity : AppCompatActivity
+    [Activity(Label = "@string/app_name", MainLauncher = true)]
+    public class MainActivity : Activity
     {
+
+        EditText _inputBill;
+        Button _calculateButton;
+        TextView _outputTip;
+        TextView _outputTotal;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
-            SetContentView(Resource.Layout.activity_main);
+            SetContentView(Resource.Layout.Main);
 
-            Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
-            SetSupportActionBar(toolbar);
+            _inputBill = FindViewById<EditText>(Resource.Id.inputBill);
+            _calculateButton = FindViewById<Button>(Resource.Id.calculateButton);
+            _outputTip = FindViewById<TextView>(Resource.Id.outputTip);
+            _outputTotal = FindViewById<TextView>(Resource.Id.outputTotal);
 
-            FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
-            fab.Click += FabOnClick;
+            _calculateButton.Click += OnCalculateClick;
         }
 
-        public override bool OnCreateOptionsMenu(IMenu menu)
+        private void OnCalculateClick(object sender, System.EventArgs e)
         {
-            MenuInflater.Inflate(Resource.Menu.menu_main, menu);
-            return true;
-        }
+            string text = _inputBill.Text;
+            var bill = double.Parse(text);
+            var tip = bill * 0.15;
+            var total = bill + tip;
 
-        public override bool OnOptionsItemSelected(IMenuItem item)
-        {
-            int id = item.ItemId;
-            if (id == Resource.Id.action_settings)
-            {
-                return true;
-            }
-
-            return base.OnOptionsItemSelected(item);
+            _outputTip.Text = tip.ToString();
+            _outputTotal.Text = total.ToString();
         }
-
-        private void FabOnClick(object sender, EventArgs eventArgs)
-        {
-            View view = (View) sender;
-            Snackbar.Make(view, "Replace with your own action", Snackbar.LengthLong)
-                .SetAction("Action", (Android.Views.View.IOnClickListener)null).Show();
-        }
-	}
+    }
 }
 
